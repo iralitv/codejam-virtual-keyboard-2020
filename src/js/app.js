@@ -1,5 +1,6 @@
 import { builtHtmlElement } from "./templateHelper";
 import {Keyboard} from "./keyboard";
 
-Keyboard.init();
+const myKeyboard = new Keyboard();
+myKeyboard.init();
 
