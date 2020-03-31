@@ -1,11 +1,11 @@
-import { builtHtmlElement } from "./templateHelper";
+import { builtHtmlElement } from './templateHelper';
 
-export class Keyboard {
+class Keyboard {
   constructor() {
     this.elements = {
       keyContainer: null,
-        keys: [],
-        textarea: null,
+      keys: [],
+      textarea: null,
     };
 
     this.props = {
@@ -14,14 +14,13 @@ export class Keyboard {
     };
   }
 
-
   init() {
     this.elements.textarea = builtHtmlElement({
       tagName: 'textarea',
       classList: ['keyboard__field'],
       attrs: {
-        'rows': 10,
-      }
+        rows: 8,
+      },
     });
 
     this.elements.keyContainer = builtHtmlElement({
@@ -35,53 +34,55 @@ export class Keyboard {
     document.body.appendChild(this.elements.textarea);
     document.body.appendChild(this.elements.keyContainer);
 
-    document.addEventListener('keydown', () => this.bindWithPhysicalKeyboard(event));
-    document.addEventListener('keyup', () => this.removeActiveClass(event));
+    document.addEventListener('keydown', (event) => this.bindWithPhysicalKeyboard(event));
+    document.addEventListener('keyup', (event) => this.removeActiveClass(event));
   }
 
   createKeys(language) {
     const fragment = document.createDocumentFragment();
     const keyLayout = {
-      'en': [
-      '`', "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", '-', '=', "Backspace",
-      'Tab', "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", '[', ']', 'Delete',
-      "CapsLock", "a", "s", "d", "f", "g", "h", "j", "k", "l", ';', '"', "Enter",
-      'Shift', "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", 'up',
-      'Control', "language", 'Alt', "space", 'left', 'down', 'right',
+      en: [
+        '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+        'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 'Delete',
+        'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '"', 'Enter',
+        'Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'up',
+        'Control', 'language', 'Alt', 'space', 'left', 'down', 'right',
       ],
-      'ru': [
-        'ё', "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", '-', '=', "Backspace",
-        'Tab', "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", 'х', 'ъ', 'Delete',
-        "CapsLock", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "Enter",
-        'Shift', "я", "ч", "с", "м", "и", "т", "ь", "ь", "б", "ю", 'up',
-        'Control', "language", 'Alt', "space", 'left', 'down', 'right',
+      ru: [
+        'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+        'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', 'Delete',
+        'CapsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
+        'Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'ь', 'б', 'ю', 'up',
+        'Control', 'language', 'Alt', 'space', 'left', 'down', 'right',
       ],
     };
 
-    keyLayout[language].forEach(key => {
+    keyLayout[language].forEach((key) => {
       const keyElement = builtHtmlElement({
         tagName: 'button',
         classList: ['keyboard__key'],
         attrs: {
-          'type': 'button',
+          type: 'button',
         },
       });
 
-      const insertLineBreak = ["Backspace", "Delete", "Enter", "up"].includes(key);
+      const insertLineBreak = ['Backspace', 'Delete', 'Enter', 'up'].includes(key);
 
-      switch(key) {
+      switch (key) {
         case 'Backspace':
           keyElement.innerHTML = '<span>Backspace</span>';
           keyElement.classList.add('keyboard__key--wide');
           keyElement.addEventListener('mousedown', () => {
-            this.elements.textarea.value = this.elements.textarea.value.substring(0, this.elements.textarea.value.length - 1);
+            this.elements.textarea.value = this.elements.textarea.value
+              .substring(0, this.elements.textarea.value.length - 1);
           });
           break;
         case 'Delete':
           keyElement.innerHTML = '<span>Delete</span>';
           keyElement.classList.add('keyboard__key--medium');
           keyElement.addEventListener('mousedown', () => {
-            this.elements.textarea.value = this.elements.textarea.value.substring(0, this.elements.textarea.value.length - 1);
+            this.elements.textarea.value = this.elements.textarea.value
+              .substring(0, this.elements.textarea.value.length - 1);
           });
           break;
         case 'CapsLock':
@@ -104,7 +105,7 @@ export class Keyboard {
           break;
         case 'Enter':
           keyElement.innerHTML = '<span>Enter</span>';
-          keyElement.classList.add('keyboard__key--medium');
+          keyElement.classList.add('keyboard__key--wide');
           keyElement.addEventListener('mousedown', () => {
             this.elements.textarea.value += '\n';
           });
@@ -118,7 +119,7 @@ export class Keyboard {
           keyElement.classList.add('keyboard__key--medium');
           break;
         case 'space':
-          keyElement.innerHTML = `<span>&#32</span>`;
+          keyElement.innerHTML = '<span>&#32</span>';
           keyElement.classList.add('keyboard__key--extra-wide');
           keyElement.addEventListener('mousedown', () => {
             this.elements.textarea.value += ' ';
@@ -157,13 +158,15 @@ export class Keyboard {
         default:
           keyElement.textContent = key.toLowerCase();
           keyElement.addEventListener('mousedown', () => {
-            this.elements.textarea.value += this.props.capsLock ? key.toUpperCase() : key.toLowerCase();
+            this.elements.textarea.value += this.props.capsLock
+              ? key.toUpperCase()
+              : key.toLowerCase();
           });
           break;
       }
 
       fragment.appendChild(keyElement);
-      if(insertLineBreak) {
+      if (insertLineBreak) {
         fragment.appendChild(document.createElement('br'));
       }
     });
@@ -173,16 +176,19 @@ export class Keyboard {
 
   bindWithPhysicalKeyboard(event) {
     const { keys } = this.elements;
-    for(let i = 0; i < keys.length; i++) {
 
+    for (let i = 0; i < keys.length; i += 1) {
       if (event.key === keys[i].textContent) {
         keys[i].classList.add('keyboard__key--active');
 
-        (event.altKey && event.shiftKey) && this.toggleLanguage();
+        if (event.altKey && event.shiftKey) {
+          this.toggleLanguage();
+        }
 
-        switch(event.key) {
+        switch (event.key) {
           case 'Backspace':
-            this.elements.textarea.value = this.elements.textarea.value.substring(0, this.elements.textarea.value.length - 1);
+            this.elements.textarea.value = this.elements.textarea.value
+              .substring(0, this.elements.textarea.value.length - 1);
             break;
           case 'Delete':
             break;
@@ -225,11 +231,13 @@ export class Keyboard {
   removeActiveClass(event) {
     const { keys } = this.elements;
 
-    for(let i = 0; i < keys.length; i++) {
+    for (let i = 0; i < keys.length; i += 1) {
       if (event.key === keys[i].textContent) {
         keys[i].classList.remove('keyboard__key--active');
 
-        (event.key === 'Shift') && this.toggleCapsLock();
+        if (event.key === 'Shift') {
+          this.toggleCapsLock();
+        }
         break;
       }
     }
@@ -237,11 +245,16 @@ export class Keyboard {
 
   toggleCapsLock() {
     this.props.capsLock = !this.props.capsLock;
-    for(const key of this.elements.keys) {
-      if(key.childElementCount === 0) {
-        key.textContent = this.props.capsLock ? key.textContent.toUpperCase() : key.textContent.toLowerCase();
+
+    this.elements.keys.forEach((key) => {
+      const innerKey = key;
+
+      if (innerKey.childElementCount === 0) {
+        innerKey.textContent = this.props.capsLock
+          ? innerKey.textContent.toUpperCase()
+          : innerKey.textContent.toLowerCase();
       }
-    }
+    });
   }
 
   toggleLanguage() {
@@ -253,3 +266,5 @@ export class Keyboard {
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard__key');
   }
 }
+
+export default Keyboard;
