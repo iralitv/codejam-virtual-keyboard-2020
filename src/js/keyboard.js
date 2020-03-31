@@ -10,7 +10,7 @@ export class Keyboard {
 
     this.props = {
       capsLock: false,
-      language: 'en',
+      language: localStorage.getItem('lang') || 'en',
     };
   }
 
@@ -246,6 +246,8 @@ export class Keyboard {
 
   toggleLanguage() {
     this.props.language = this.props.language === 'en' ? 'ru' : 'en';
+    localStorage.setItem('lang', this.props.language);
+
     this.elements.keyContainer.innerHTML = '';
     this.elements.keyContainer.appendChild(this.createKeys(this.props.language));
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard__key');
