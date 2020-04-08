@@ -1,4 +1,4 @@
-import { builtHtmlElement } from './templateHelper';
+import builtHtmlElement from './templateHelper';
 
 class Keyboard {
   constructor() {
