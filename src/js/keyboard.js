@@ -97,6 +97,7 @@ class Keyboard {
         break;
       }
     }
+
     this.elements.keyContainer.removeEventListener('keydown', (e) => this.bindWithKeyboard(e));
   }
 
@@ -109,6 +110,7 @@ class Keyboard {
         break;
       }
     }
+
     this.elements.keyContainer.removeEventListener('mousedown', (e) => this.clickKeyboard(e));
   }
 
@@ -121,11 +123,13 @@ class Keyboard {
         if (event.key === 'Shift') {
           this.toggleCapsLock();
         }
+
         this.elements.keyContainer.removeEventListener('keyup', (e) => this.removeActiveClass(e));
       } else if (event.target.textContent === item.textContent) {
         if (event.target.textContent === 'Shift') {
           this.toggleCapsLock();
         }
+
         this.elements.keyContainer.removeEventListener('mouseup', (e) => this.removeActiveClass(e));
       }
     });
