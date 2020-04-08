@@ -1,4 +1,5 @@
 import builtHtmlElement from './templateHelper';
+import { createKeys } from './createKeys';
 
 class Keyboard {
   constructor() {
@@ -28,153 +29,60 @@ class Keyboard {
       classList: ['keyboard__keys'],
     });
 
-    this.elements.keyContainer.appendChild(this.createKeys(this.props.language));
+    this.elements.keyContainer.appendChild(createKeys(this.props.language));
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard__key');
 
     document.body.appendChild(this.elements.textarea);
     document.body.appendChild(this.elements.keyContainer);
 
-    document.addEventListener('keydown', (event) => this.bindWithPhysicalKeyboard(event));
+    document.addEventListener('keydown', (event) => this.bindWithKeyboard(event));
     document.addEventListener('keyup', (event) => this.removeActiveClass(event));
+
+    this.elements.keyContainer.addEventListener('mousedown', (event) => this.clickKeyboard(event));
+    this.elements.keyContainer.addEventListener('mouseup', (event) => this.removeActiveClass(event));
   }
 
-  createKeys(language) {
-    const fragment = document.createDocumentFragment();
-    const keyLayout = {
-      en: [
-        '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
-        'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 'Delete',
-        'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '"', 'Enter',
-        'Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'up',
-        'Control', 'language', 'Alt', 'space', 'left', 'down', 'right',
-      ],
-      ru: [
-        'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
-        'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', 'Delete',
-        'CapsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
-        'Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'ь', 'б', 'ю', 'up',
-        'Control', 'language', 'Alt', 'space', 'left', 'down', 'right',
-      ],
-    };
-
-    keyLayout[language].forEach((key) => {
-      const keyElement = builtHtmlElement({
-        tagName: 'button',
-        classList: ['keyboard__key'],
-        attrs: {
-          type: 'button',
-        },
-      });
-
-      const insertLineBreak = ['Backspace', 'Delete', 'Enter', 'up'].includes(key);
-
-      switch (key) {
-        case 'Backspace':
-          keyElement.innerHTML = '<span>Backspace</span>';
-          keyElement.classList.add('keyboard__key--wide');
-          keyElement.addEventListener('mousedown', () => {
-            this.elements.textarea.value = this.elements.textarea.value
-              .substring(0, this.elements.textarea.value.length - 1);
-          });
-          break;
-        case 'Delete':
-          keyElement.innerHTML = '<span>Delete</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          keyElement.addEventListener('mousedown', () => {
-            this.elements.textarea.value = this.elements.textarea.value
-              .substring(0, this.elements.textarea.value.length - 1);
-          });
-          break;
-        case 'CapsLock':
-          keyElement.innerHTML = '<span>CapsLock</span>';
-          keyElement.classList.add('keyboard__key--wide');
-          keyElement.addEventListener('mousedown', () => {
-            this.toggleCapsLock();
-            keyElement.classList.toggle('keyboard__capslock--active', this.props.capsLock);
-          });
-          break;
-        case 'Shift':
-          keyElement.innerHTML = '<span>Shift</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          keyElement.addEventListener('mousedown', () => {
-            this.toggleCapsLock();
-          });
-          keyElement.addEventListener('mouseup', () => {
-            this.toggleCapsLock();
-          });
-          break;
-        case 'Enter':
-          keyElement.innerHTML = '<span>Enter</span>';
-          keyElement.classList.add('keyboard__key--wide');
-          keyElement.addEventListener('mousedown', () => {
-            this.elements.textarea.value += '\n';
-          });
-          break;
-        case 'Control':
-          keyElement.innerHTML = '<span>Control</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          break;
-        case 'Alt':
-          keyElement.innerHTML = '<span>Alt</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          break;
-        case 'space':
-          keyElement.innerHTML = '<span>&#32</span>';
-          keyElement.classList.add('keyboard__key--extra-wide');
-          keyElement.addEventListener('mousedown', () => {
-            this.elements.textarea.value += ' ';
-          });
-          break;
-        case 'Tab':
-          keyElement.innerHTML = '<span>Tab</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          keyElement.addEventListener('mousedown', () => {
-            this.elements.textarea.value += `${' '.repeat(4)}`;
-          });
-          break;
-        case 'language':
-          keyElement.innerHTML = '<span>lang</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          keyElement.addEventListener('mousedown', () => {
-            this.toggleLanguage();
-          });
-          break;
-        case 'up':
-          keyElement.innerHTML = '<span class="arrow arrow-up">ArrowUp</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          break;
-        case 'left':
-          keyElement.innerHTML = '<span class="arrow arrow-left">ArrowLeft</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          break;
-        case 'right':
-          keyElement.innerHTML = '<span class="arrow arrow-right">ArrowRight</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          break;
-        case 'down':
-          keyElement.innerHTML = '<span class="arrow arrow-down">ArrowDown</span>';
-          keyElement.classList.add('keyboard__key--medium');
-          break;
-        default:
-          keyElement.textContent = key.toLowerCase();
-          keyElement.addEventListener('mousedown', () => {
-            this.elements.textarea.value += this.props.capsLock
-              ? key.toUpperCase()
-              : key.toLowerCase();
-          });
-          break;
-      }
-
-      fragment.appendChild(keyElement);
-      if (insertLineBreak) {
-        fragment.appendChild(document.createElement('br'));
-      }
-    });
-
-    return fragment;
+  actionKeys(key, event) {
+    switch (key.textContent) {
+      case 'Delete':
+      case 'Backspace':
+        this.elements.textarea.value = this.elements.textarea.value
+          .substring(0, this.elements.textarea.value.length - 1);
+        break;
+      case 'CapsLock':
+        this.toggleCapsLock();
+        key.classList.toggle('keyboard__capslock--active', this.props.capsLock);
+        break;
+      case 'Shift':
+        this.toggleCapsLock();
+        break;
+      case 'Enter':
+        this.elements.textarea.value += '\n';
+        break;
+      case ' ':
+        this.elements.textarea.value += ' ';
+        break;
+      case 'Tab':
+        event.preventDefault();
+        this.elements.textarea.value += '\t';
+        break;
+      case 'lang':
+        this.toggleLanguage();
+        break;
+      case 'Control':
+      case 'Alt':
+      case 'ArrowUp':
+      case 'ArrowLeft':
+      case 'ArrowRight':
+      case 'ArrowDown':
+        break;
+      default:
+        this.elements.textarea.value += key.textContent;
+        break;
+    }
   }
 
-  bindWithPhysicalKeyboard(event) {
+  bindWithKeyboard(event) {
     const { keys } = this.elements;
 
     for (let i = 0; i < keys.length; i += 1) {
@@ -185,62 +93,42 @@ class Keyboard {
           this.toggleLanguage();
         }
 
-        switch (event.key) {
-          case 'Backspace':
-            this.elements.textarea.value = this.elements.textarea.value
-              .substring(0, this.elements.textarea.value.length - 1);
-            break;
-          case 'Delete':
-            break;
-          case 'CapsLock':
-            this.toggleCapsLock();
-            keys[i].classList.toggle('keyboard__capslock--active', this.props.capsLock);
-            break;
-          case 'Shift':
-            this.toggleCapsLock();
-            break;
-          case 'Enter':
-            this.elements.textarea.value += '\n';
-            break;
-          case ' ':
-            this.elements.textarea.value += ' ';
-            break;
-          case 'Control':
-            break;
-          case 'Alt':
-            break;
-          case 'Tab':
-            this.elements.textarea.value += `${' '.repeat(4)}`;
-            break;
-          case 'ArrowUp':
-            break;
-          case 'ArrowLeft':
-            break;
-          case 'ArrowRight':
-            break;
-          case 'ArrowDown':
-            break;
-          default:
-            this.elements.textarea.value += keys[i].textContent;
-            break;
-        }
+        this.actionKeys(keys[i], event);
+        break;
       }
     }
+    this.elements.keyContainer.removeEventListener('keydown', (e) => this.bindWithKeyboard(e));
+  }
+
+  clickKeyboard(event) {
+    const { keys } = this.elements;
+
+    for (let i = 0; i < keys.length; i += 1) {
+      if (event.target.textContent === keys[i].textContent) {
+        this.actionKeys(keys[i], event);
+        break;
+      }
+    }
+    this.elements.keyContainer.removeEventListener('mousedown', (e) => this.clickKeyboard(e));
   }
 
   removeActiveClass(event) {
     const { keys } = this.elements;
 
-    for (let i = 0; i < keys.length; i += 1) {
-      if (event.key === keys[i].textContent) {
-        keys[i].classList.remove('keyboard__key--active');
-
+    keys.forEach((item) => {
+      if (event.key === item.textContent) {
+        item.classList.remove('keyboard__key--active');
         if (event.key === 'Shift') {
           this.toggleCapsLock();
         }
-        break;
+        this.elements.keyContainer.removeEventListener('keyup', (e) => this.removeActiveClass(e));
+      } else if (event.target.textContent === item.textContent) {
+        if (event.target.textContent === 'Shift') {
+          this.toggleCapsLock();
+        }
+        this.elements.keyContainer.removeEventListener('mouseup', (e) => this.removeActiveClass(e));
       }
-    }
+    });
   }
 
   toggleCapsLock() {
@@ -262,7 +150,7 @@ class Keyboard {
     localStorage.setItem('lang', this.props.language);
 
     this.elements.keyContainer.innerHTML = '';
-    this.elements.keyContainer.appendChild(this.createKeys(this.props.language));
+    this.elements.keyContainer.appendChild(createKeys(this.props.language));
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard__key');
   }
 }
