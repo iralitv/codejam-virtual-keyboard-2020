@@ -1,0 +1,88 @@
+.keyboard__field {
+  display: block;
+  width: 80%;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.5rem;
+  padding: 10px;
+  margin: 0 auto;
+}
+
+.keyboard__keys {
+  width: 90%;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.keyboard__key {
+  height: 35px;
+  width: 5%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  box-shadow: 0 4px 0 #c0c0c0;
+  border: none;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
+  vertical-align: top;
+  padding: 0;
+  margin: 3px;
+  -webkit-tap-highlight-color: transparent;
+  transition: all .2s;
+}
+
+.keyboard__key--medium {
+  width: 8%;
+  background: #a9a9a9;
+  color: #ffffff;
+}
+
+.keyboard__key--wide {
+  width: 12%;
+  background: #a9a9a9;
+  color: #ffffff;
+}
+
+.keyboard__key--extra-wide {
+  width: 35%;
+}
+
+.keyboard__key:active,
+.keyboard__key--active,
+.keyboard__capslock--active{
+  background: red;
+  box-shadow: 0 1px 0 #c0c0c0;
+  transform: translateY(3px);
+}
+
+.arrow {
+  position: relative;
+  font-size: 0;
+}
+
+.arrow::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.arrow-up::before {
+  content: '\25B2';
+}
+
+.arrow-down::before {
+  content: '\25BC';
+}
+
+.arrow-left::before {
+  content: '\25C0';
+}
+
+.arrow-right::before {
+  content: '\25B6';
+}

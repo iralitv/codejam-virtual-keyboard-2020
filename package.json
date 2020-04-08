@@ -1,0 +1,32 @@
+{
+  "name": "codejam-virtual-keyboard-2020",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch",
+    "lint": "eslint \"src/js/**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iralitv/codejam-virtual-keyboard-2020.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iralitv/codejam-virtual-keyboard-2020/issues"
+  },
+  "homepage": "https://github.com/iralitv/codejam-virtual-keyboard-2020#readme",
+  "devDependencies": {
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9"
+  }
+}
