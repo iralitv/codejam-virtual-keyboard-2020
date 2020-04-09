@@ -54,6 +54,7 @@
 
 .keyboard__key--extra-wide {
   width: 35%;
+  font-size: 0;
 }
 
 .keyboard__key:active,

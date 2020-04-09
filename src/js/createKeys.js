@@ -1,10 +1,10 @@
-import { insertLineBreak, languages } from './languages';
+import { insertLineBreak } from './languages';
 import builtHtmlElement from './templateHelper';
 
-export const createKeys = (language) => {
+export const createKeys = (keyLayout) => {
   const fragment = document.createDocumentFragment();
 
-  languages[language].forEach((key) => {
+  Object.entries(keyLayout).forEach(([key, value]) => {
     const keyElement = builtHtmlElement({
       tagName: 'button',
       classList: ['keyboard__key'],
@@ -15,68 +15,68 @@ export const createKeys = (language) => {
 
     switch (key) {
       case 'Backspace':
-        keyElement.innerHTML = '<span>Backspace</span>';
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--wide');
         break;
       case 'Delete':
-        keyElement.innerHTML = '<span>Delete</span>';
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
       case 'CapsLock':
-        keyElement.innerHTML = '<span>CapsLock</span>';
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--wide');
         break;
-      case 'Shift':
-        keyElement.innerHTML = '<span>Shift</span>';
+      case 'ShiftLeft':
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
       case 'Enter':
-        keyElement.innerHTML = '<span>Enter</span>';
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--wide');
         break;
-      case 'Control':
-        keyElement.innerHTML = '<span>Control</span>';
+      case 'ControlLeft':
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
-      case 'Alt':
-        keyElement.innerHTML = '<span>Alt</span>';
+      case 'AltLeft':
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
-      case 'space':
-        keyElement.innerHTML = '<span>&#32</span>';
+      case 'Space':
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--extra-wide');
         break;
       case 'Tab':
-        keyElement.innerHTML = '<span>Tab</span>';
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
-      case 'language':
-        keyElement.innerHTML = '<span>lang</span>';
+      case 'Lang':
+        keyElement.innerHTML = `<span>${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
-      case 'up':
-        keyElement.innerHTML = '<span class="arrow arrow-up">ArrowUp</span>';
+      case 'ArrowUp':
+        keyElement.innerHTML = `<span class="arrow arrow-up">${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
-      case 'left':
-        keyElement.innerHTML = '<span class="arrow arrow-left">ArrowLeft</span>';
+      case 'ArrowLeft':
+        keyElement.innerHTML = `<span class="arrow arrow-left">${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
-      case 'right':
-        keyElement.innerHTML = '<span class="arrow arrow-right">ArrowRight</span>';
+      case 'ArrowRight':
+        keyElement.innerHTML = `<span class="arrow arrow-right">${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
-      case 'down':
-        keyElement.innerHTML = '<span class="arrow arrow-down">ArrowDown</span>';
+      case 'ArrowDown':
+        keyElement.innerHTML = `<span class="arrow arrow-down">${value}</span>`;
         keyElement.classList.add('keyboard__key--medium');
         break;
       default:
-        keyElement.textContent = key.toLowerCase();
+        keyElement.textContent = value.toLowerCase();
         break;
     }
 
     fragment.appendChild(keyElement);
-    if (insertLineBreak(key)) {
+    if (insertLineBreak(value)) {
       fragment.appendChild(document.createElement('br'));
     }
   });

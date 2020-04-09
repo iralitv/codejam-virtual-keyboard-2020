@@ -1,5 +1,6 @@
 import builtHtmlElement from './templateHelper';
 import { createKeys } from './createKeys';
+import { languages } from './languages';
 
 class Keyboard {
   constructor() {
@@ -11,9 +12,12 @@ class Keyboard {
     };
 
     this.props = {
-      capsLock: false,
+      isCapsLock: false,
+      isShift: false,
       language: localStorage.getItem('lang') || 'en',
     };
+
+    this.keyLayout = languages[this.props.language];
   }
 
   init() {
@@ -36,7 +40,7 @@ class Keyboard {
       classList: ['keyboard__keys'],
     });
 
-    this.elements.keyContainer.appendChild(createKeys(this.props.language));
+    this.elements.keyContainer.appendChild(createKeys(this.keyLayout));
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard__key');
 
     const fragment = document.createDocumentFragment();
@@ -53,8 +57,8 @@ class Keyboard {
     this.elements.keyContainer.addEventListener('mouseup', (event) => this.removeActiveClass(event));
   }
 
-  actionKeys(key, event) {
-    switch (key.textContent) {
+  actionKeys(key, value, event) {
+    switch (key) {
       case 'Delete':
       case 'Backspace':
         this.elements.textarea.value = this.elements.textarea.value
@@ -62,110 +66,116 @@ class Keyboard {
         break;
       case 'CapsLock':
         this.toggleCapsLock();
-        key.classList.toggle('keyboard__capslock--active', this.props.capsLock);
         break;
-      case 'Shift':
+      case 'ShiftLeft':
+        this.props.isShift = true;
         this.toggleCapsLock();
         break;
       case 'Enter':
         this.elements.textarea.value += '\n';
         break;
-      case ' ':
+      case 'Space':
+        event.preventDefault();
         this.elements.textarea.value += ' ';
         break;
       case 'Tab':
         event.preventDefault();
         this.elements.textarea.value += '\t';
         break;
-      case 'lang':
+      case 'Lang':
         this.toggleLanguage();
         break;
-      case 'Control':
-      case 'Alt':
+      case 'ControlLeft':
+      case 'AltLeft':
       case 'ArrowUp':
       case 'ArrowLeft':
       case 'ArrowRight':
       case 'ArrowDown':
+        event.preventDefault();
         break;
       default:
-        this.elements.textarea.value += key.textContent;
+        this.elements.textarea.value += this.props.isCapsLock
+          ? value.toUpperCase()
+          : value.toLowerCase();
         break;
     }
-  }
-
-  bindWithKeyboard(event) {
-    const { keys } = this.elements;
-
-    for (let i = 0; i < keys.length; i += 1) {
-      if (event.key === keys[i].textContent) {
-        keys[i].classList.add('keyboard__key--active');
-
-        if (event.altKey && event.shiftKey) {
-          this.toggleLanguage();
-        }
-
-        this.actionKeys(keys[i], event);
-        break;
-      }
-    }
-
-    this.elements.keyContainer.removeEventListener('keydown', (e) => this.bindWithKeyboard(e));
   }
 
   clickKeyboard(event) {
-    const { keys } = this.elements;
-
-    for (let i = 0; i < keys.length; i += 1) {
-      if (event.target.textContent === keys[i].textContent) {
-        this.actionKeys(keys[i], event);
-        break;
+    Object.entries(this.keyLayout).forEach(([key, value]) => {
+      if (event.target.textContent.toLowerCase() === value.toLowerCase()) {
+        this.actionKeys(key, value, event);
       }
-    }
+    });
 
     this.elements.keyContainer.removeEventListener('mousedown', (e) => this.clickKeyboard(e));
+  }
+
+  bindWithKeyboard(event) {
+    this.elements.textarea.blur();
+    const { keys } = this.elements;
+
+    if (event.altKey && event.shiftKey) {
+      this.toggleLanguage();
+    }
+
+    Object.entries(this.keyLayout).forEach(([key, value]) => {
+      if (event.code === key) {
+        keys.forEach((item) => {
+          if (item.textContent.toLowerCase() === value.toLowerCase()) {
+            item.classList.add('keyboard__key--active');
+          }
+        });
+
+        this.actionKeys(key, value, event);
+      }
+    });
+
+    this.elements.keyContainer.removeEventListener('keydown', (e) => this.bindWithKeyboard(e));
   }
 
   removeActiveClass(event) {
     const { keys } = this.elements;
 
     keys.forEach((item) => {
-      if (event.key === item.textContent) {
-        item.classList.remove('keyboard__key--active');
-        if (event.key === 'Shift') {
-          this.toggleCapsLock();
-        }
-
-        this.elements.keyContainer.removeEventListener('keyup', (e) => this.removeActiveClass(e));
-      } else if (event.target.textContent === item.textContent) {
-        if (event.target.textContent === 'Shift') {
-          this.toggleCapsLock();
-        }
-
-        this.elements.keyContainer.removeEventListener('mouseup', (e) => this.removeActiveClass(e));
-      }
+      item.classList.remove('keyboard__key--active');
     });
+
+    if (event.target.textContent === 'Shift') {
+      this.toggleCapsLock();
+      this.props.isShift = false;
+    }
+
+    if (event.code === 'ShiftLeft') {
+      this.toggleCapsLock();
+      this.props.isShift = false;
+    }
+    this.elements.keyContainer.removeEventListener('keyup', (e) => this.removeActiveClass(e));
+    this.elements.keyContainer.removeEventListener('mouseup', (e) => this.removeActiveClass(e));
   }
 
   toggleCapsLock() {
-    this.props.capsLock = !this.props.capsLock;
+    const { keys } = this.elements;
+    this.props.isCapsLock = !this.props.isCapsLock;
 
-    this.elements.keys.forEach((key) => {
-      const innerKey = key;
-
-      if (innerKey.childElementCount === 0) {
-        innerKey.textContent = this.props.capsLock
-          ? innerKey.textContent.toUpperCase()
-          : innerKey.textContent.toLowerCase();
+    for (let i = 0; i < keys.length; i += 1) {
+      if (keys[i].childElementCount === 0) {
+        keys[i].textContent = this.props.isCapsLock
+          ? keys[i].textContent.toUpperCase()
+          : keys[i].textContent.toLowerCase();
+      } else if (keys[i].textContent === 'CapsLock' && !this.props.isShift) {
+        keys[i].classList.toggle('keyboard__capslock--active', this.props.isCapsLock);
       }
-    });
+    }
   }
 
   toggleLanguage() {
     this.props.language = this.props.language === 'en' ? 'ru' : 'en';
     localStorage.setItem('lang', this.props.language);
+    this.keyLayout = languages[this.props.language];
 
     this.elements.keyContainer.innerHTML = '';
-    this.elements.keyContainer.appendChild(createKeys(this.props.language));
+    this.elements.keyContainer.appendChild(createKeys(this.keyLayout));
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard__key');
   }
 }
