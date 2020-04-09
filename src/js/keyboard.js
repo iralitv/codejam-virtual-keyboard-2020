@@ -39,9 +39,12 @@ class Keyboard {
     this.elements.keyContainer.appendChild(createKeys(this.props.language));
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard__key');
 
-    document.body.appendChild(this.elements.textarea);
-    document.body.appendChild(this.elements.langSwitch);
-    document.body.appendChild(this.elements.keyContainer);
+    const fragment = document.createDocumentFragment();
+    fragment.appendChild(this.elements.textarea);
+    fragment.appendChild(this.elements.langSwitch);
+    fragment.appendChild(this.elements.keyContainer);
+
+    document.body.appendChild(fragment);
 
     document.addEventListener('keydown', (event) => this.bindWithKeyboard(event));
     document.addEventListener('keyup', (event) => this.removeActiveClass(event));
