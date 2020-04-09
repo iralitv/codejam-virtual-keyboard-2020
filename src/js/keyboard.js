@@ -7,6 +7,7 @@ class Keyboard {
       keyContainer: null,
       keys: [],
       textarea: null,
+      langSwitch: null,
     };
 
     this.props = {
@@ -24,6 +25,12 @@ class Keyboard {
       },
     });
 
+    this.elements.langSwitch = builtHtmlElement({
+      tagName: 'p',
+      classList: ['keyboard__switch'],
+    });
+    this.elements.langSwitch.innerText = 'For switch language use Shift + Alt';
+
     this.elements.keyContainer = builtHtmlElement({
       tagName: 'section',
       classList: ['keyboard__keys'],
@@ -33,6 +40,7 @@ class Keyboard {
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard__key');
 
     document.body.appendChild(this.elements.textarea);
+    document.body.appendChild(this.elements.langSwitch);
     document.body.appendChild(this.elements.keyContainer);
 
     document.addEventListener('keydown', (event) => this.bindWithKeyboard(event));

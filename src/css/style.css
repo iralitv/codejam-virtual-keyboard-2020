@@ -7,6 +7,13 @@
   margin: 0 auto;
 }
 
+.keyboard__switch {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.5rem;
+  color: darkblue;
+  text-align: center;
+}
+
 .keyboard__keys {
   width: 90%;
   text-align: center;
