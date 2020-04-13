@@ -33,7 +33,7 @@ class Keyboard {
       tagName: 'p',
       classList: ['keyboard__switch'],
     });
-    this.elements.langSwitch.innerText = 'For switch language use Shift + Alt';
+    this.elements.langSwitch.innerText = 'For switch language use Shift + Alt. Created on Windows 10 OS.';
 
     this.elements.keyContainer = builtHtmlElement({
       tagName: 'section',
